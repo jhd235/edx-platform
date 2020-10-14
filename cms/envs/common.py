@@ -1358,8 +1358,6 @@ INSTALLED_APPS = [
     'common.djangoapps.track',
     'eventtracking.django.apps.EventTrackingConfig',
 
-    'util',
-
     # For asset pipelining
     'common.djangoapps.edxmako.apps.EdxMakoConfig',
     'pipeline',
