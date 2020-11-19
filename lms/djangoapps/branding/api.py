@@ -443,15 +443,21 @@ def _footer_mobile_links(is_secure):
 
 
 def _footer_logo_img(is_secure):
-    """Return the logo used for footer about link
+    """
+    Return the logo used for footer about link
 
-    Args:
+    Arguments:
         is_secure (bool): Whether the request is using TLS.
 
     Returns:
-        Absolute url to logo
+        URL of the brand logo
     """
-    logo_name = configuration_helpers.get_value('FOOTER_ORGANIZATION_IMAGE', settings.FOOTER_ORGANIZATION_IMAGE)
+    default_local_path = 'images/logo.png'
+    footer_image_url = settings.LOGO_TRADEMARK_URL
+    footer_url_from_site_config = configuration_helpers.get_value(
+        'FOOTER_ORGANIZATION_IMAGE',
+        settings.FOOTER_ORGANIZATION_IMAGE
+    )
     # `logo_name` is looked up from the configuration,
     # which falls back on the Django settings, which loads it from
     # `lms.yml`, which is created and managed by Ansible. Because of
@@ -461,25 +467,22 @@ def _footer_logo_img(is_secure):
     # EdX needs the FOOTER_ORGANIZATION_IMAGE value to point to edX's
     # logo by default, so that it can display properly on edx.org -- both
     # within the LMS, and on the Drupal marketing site, which uses this API.
-    try:
-        return _absolute_url_staticfile(is_secure, logo_name)
-    except ValueError:
-        # However, if the edx.org comprehensive theme is not activated,
-        # Django's staticfiles system will be unable to find this footer,
-        # and will throw a ValueError. Since the edx.org comprehensive theme
-        # is not activated by default, we will end up entering this block
-        # of code on new Open edX installations, and on sandbox installations.
-        # We can log when this happens:
-        default_logo = "images/logo.png"
-        log.info(
-            u"Failed to find footer logo at '%s', using '%s' instead",
-            logo_name,
-            default_logo,
-        )
-        # And we'll use the default logo path of "images/logo.png" instead.
-        # There is a core asset that corresponds to this logo, so this should
-        # always succeed.
-        return staticfiles_storage.url(default_logo)
+    if footer_url_from_site_config:
+        return _absolute_url_staticfile(is_secure, footer_url_from_site_config)
+
+    if footer_image_url:
+        return footer_image_url
+
+    log.info(
+        "Failed to find footer logo at '%s', using '%s' instead",
+        footer_url_from_site_config,
+        default_local_path,
+    )
+
+    # And we'll use the default logo path of "images/logo.png" instead.
+    # There is a core asset that corresponds to this logo, so this should
+    # always succeed.
+    return staticfiles_storage.url(default_local_path)
 
 
 def _absolute_url(is_secure, url_path):
@@ -564,27 +567,54 @@ def get_base_url(is_secure):
 
 def get_logo_url(is_secure=True):
     """
-    Return the url for the branded logo image to be used
+    Return the url for the branded logo image to be used.
+
+    Preference of the logo should be,
+        Look for site configuration override and return absolute url
+        Absolute url of brand Logo if defined in django settings
+        Relative default local image path
+
     Arguments:
         is_secure (bool): If true, use HTTPS as the protocol.
     """
+    brand_logo_url = settings.LOGO_URL
+    default_local_path = 'images/logo.png'
+    logo_url_from_site_config = configuration_helpers.get_value('logo_image_url')
 
-    # if the configuration has an overide value for the logo_image_url
-    # let's use that
-    image_url = configuration_helpers.get_value('logo_image_url')
-    if image_url:
-        return _absolute_url_staticfile(
-            is_secure=is_secure,
-            name=image_url,
-        )
+    if logo_url_from_site_config:
+        return _absolute_url_staticfile(is_secure=is_secure, name=logo_url_from_site_config)
 
     # otherwise, use the legacy means to configure this
     university = configuration_helpers.get_value('university')
-
     if university:
         return staticfiles_storage.url('images/{uni}-on-edx-logo.png'.format(uni=university))
-    else:
-        return staticfiles_storage.url('images/logo.png')
+
+    if brand_logo_url:
+        return brand_logo_url
+
+    return staticfiles_storage.url(default_local_path)
+
+
+def get_favicon_url():
+    """
+    Return the url for the branded favicon image to be used.
+
+    Preference of the icon should be,
+        Look for site configuration override
+        Brand favicon url is defined in settings
+        Default local image path
+    """
+    favicon_url = settings.FAVICON_URL
+    default_local_path = getattr(settings, 'FAVICON_PATH', 'images/favicon.ico')
+    favicon_url_from_site_config = configuration_helpers.get_value('favicon_path')
+
+    if favicon_url_from_site_config:
+        return staticfiles_storage.url(favicon_url_from_site_config)
+
+    if favicon_url:
+        return favicon_url
+
+    return staticfiles_storage.url(default_local_path)
 
 
 def get_tos_and_honor_code_url():

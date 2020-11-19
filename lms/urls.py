@@ -224,6 +224,7 @@ urlpatterns += [
     url(r'^support/', include('lms.djangoapps.support.urls')),
 ]
 
+# Todo -- check its useability
 # Favicon
 favicon_path = configuration_helpers.get_value('favicon_path', settings.FAVICON_PATH)  # pylint: disable=invalid-name
 urlpatterns += [
