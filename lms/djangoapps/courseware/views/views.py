@@ -55,7 +55,8 @@ from lms.djangoapps.ccx.custom_exception import CCXLocatorValidationException
 from lms.djangoapps.certificates import api as certs_api
 from lms.djangoapps.certificates.models import CertificateStatuses
 from lms.djangoapps.commerce.utils import EcommerceService
-from lms.djangoapps.course_home_api.utils import is_request_from_learning_mfe
+from lms.djangoapps.course_home_api.toggles import course_home_mfe_dates_tab_is_active
+from lms.djangoapps.course_home_api.utils import get_microfrontend_url, is_request_from_learning_mfe
 from lms.djangoapps.courseware.access import has_access, has_ccx_coach_role
 from lms.djangoapps.courseware.access_utils import check_course_open_for_learner, check_public_access
 from lms.djangoapps.courseware.courses import (
@@ -999,7 +1000,6 @@ def program_marketing(request, program_uuid):
     return render_to_response('courseware/program_marketing.html', context)
 
 
-@login_required
 @ensure_csrf_cookie
 @ensure_valid_course_key
 def dates(request, course_id):
@@ -1010,6 +1010,9 @@ def dates(request, course_id):
     from lms.urls import COURSE_DATES_NAME, RESET_COURSE_DEADLINES_NAME
 
     course_key = CourseKey.from_string(course_id)
+    if course_home_mfe_dates_tab_is_active:
+        microfrontend_url = get_microfrontend_url(course_key=course_key, view_name=COURSE_DATES_NAME)
+        raise Redirect(microfrontend_url)
 
     # Enable NR tracing for this view based on course
     monitoring_utils.set_custom_attribute('course_id', text_type(course_key))

@@ -162,10 +162,6 @@ class ExperimentWaffleFlag(CourseWaffleFlag):
         if not request:
             return 0
 
-        if not hasattr(request, 'user') or not request.user.id:
-            # We need username for stable bucketing and id for tracking, so just skip anonymous (not-logged-in) users
-            return 0
-
         user = get_specific_masquerading_user(request.user, course_key)
         if user is None:
             user = request.user
@@ -209,16 +205,17 @@ class ExperimentWaffleFlag(CourseWaffleFlag):
             if bucket_flag.is_enabled(course_key):
                 bucket = i
                 break
-        else:
-            bucket = stable_bucketing_hash_group(
-                bucketing_group_name, self.num_buckets, user.username
-            )
+            else:
+                bucket = stable_bucketing_hash_group(
+                    bucketing_group_name, self.num_buckets, user
+                )
 
         session_key = 'tracked.{}'.format(experiment_name)
+        anonymous = not hasattr(request, 'user') or not request.user.id
         if (
                 track and hasattr(request, 'session') and
                 session_key not in request.session and
-                not masquerading_as_specific_student
+                not masquerading_as_specific_student and not anonymous
         ):
             segment.track(
                 user_id=user.id,

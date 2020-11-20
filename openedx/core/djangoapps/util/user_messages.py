@@ -143,7 +143,7 @@ class UserMessageCollection():
         """
         Registers a warning message to be shown to the user.
         """
-        self.register_user_message(request, UserMessageType.WARNING, message, **kwargs)
+        self.register_user_message(request, UserMessageType.WARNING, message, once_only=True, **kwargs)
 
     @classmethod
     def register_error_message(self, request, message, **kwargs):
