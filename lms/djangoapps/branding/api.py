@@ -460,7 +460,7 @@ def _footer_logo_img(is_secure):
     )
 
     log.debug(
-        ("[RebrandingedX][footer_logo_img]: site_config:%s, footer_org_img:%s ",
+        ("[RebrandingedX][footer_logo_img]: site_config:%s, footer_org_img:%s,",
          "brand_url:%s, default:%s"),
         footer_url_from_site_config,
         settings.FOOTER_ORGANIZATION_IMAGE,
