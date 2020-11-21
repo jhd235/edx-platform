@@ -453,11 +453,21 @@ def _footer_logo_img(is_secure):
         URL of the brand logo
     """
     default_local_path = 'images/logo.png'
-    footer_image_url = settings.LOGO_TRADEMARK_URL
+    brand_footer_logo_url = settings.LOGO_TRADEMARK_URL
     footer_url_from_site_config = configuration_helpers.get_value(
         'FOOTER_ORGANIZATION_IMAGE',
         settings.FOOTER_ORGANIZATION_IMAGE
     )
+
+    log.debug(
+        ("[RebrandingedX][footer_logo_img]: site_config:%s, footer_org_img:%s ",
+         "brand_url:%s, default:%s"),
+        footer_url_from_site_config,
+        settings.FOOTER_ORGANIZATION_IMAGE,
+        brand_footer_logo_url,
+        default_local_path
+    )
+
     # `logo_name` is looked up from the configuration,
     # which falls back on the Django settings, which loads it from
     # `lms.yml`, which is created and managed by Ansible. Because of
@@ -470,8 +480,8 @@ def _footer_logo_img(is_secure):
     if footer_url_from_site_config:
         return _absolute_url_staticfile(is_secure, footer_url_from_site_config)
 
-    if footer_image_url:
-        return footer_image_url
+    if brand_footer_logo_url:
+        return brand_footer_logo_url
 
     log.info(
         "Failed to find footer logo at '%s', using '%s' instead",
@@ -580,12 +590,20 @@ def get_logo_url(is_secure=True):
     brand_logo_url = settings.LOGO_URL
     default_local_path = 'images/logo.png'
     logo_url_from_site_config = configuration_helpers.get_value('logo_image_url')
+    university = configuration_helpers.get_value('university')
+
+    log.debug(
+        ("[RebrandingedX][get_logo_url]: site_config:%s, university:%s, "
+         "brand_url:%s, default:%s"),
+        logo_url_from_site_config,
+        university,
+        brand_logo_url,
+        default_local_path
+    )
 
     if logo_url_from_site_config:
         return _absolute_url_staticfile(is_secure=is_secure, name=logo_url_from_site_config)
 
-    # otherwise, use the legacy means to configure this
-    university = configuration_helpers.get_value('university')
     if university:
         return staticfiles_storage.url('images/{uni}-on-edx-logo.png'.format(uni=university))
 
@@ -604,15 +622,22 @@ def get_favicon_url():
         Brand favicon url is defined in settings
         Default local image path
     """
-    favicon_url = settings.FAVICON_URL
+    brand_favicon_url = settings.FAVICON_URL
     default_local_path = getattr(settings, 'FAVICON_PATH', 'images/favicon.ico')
     favicon_url_from_site_config = configuration_helpers.get_value('favicon_path')
+    log.debug(
+        ("[RebrandingedX][get_favicon_url]: site_config:%s, brand_url:%s "
+         "default:%s"),
+        favicon_url_from_site_config,
+        brand_favicon_url,
+        default_local_path,
+    )
 
     if favicon_url_from_site_config:
         return staticfiles_storage.url(favicon_url_from_site_config)
 
-    if favicon_url:
-        return favicon_url
+    if brand_favicon_url:
+        return brand_favicon_url
 
     return staticfiles_storage.url(default_local_path)
 
