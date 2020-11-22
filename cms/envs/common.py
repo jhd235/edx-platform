@@ -2294,7 +2294,18 @@ VERIFY_STUDENT = {
     # The variable represents the window within which a verification is considered to be "expiring soon."
     "EXPIRING_SOON_WINDOW": 28,
 }
-LOGO_URL = None
+
+################# Settings for brand logos. #################
 LOGO_TRADEMARK_URL = None
+LOGO_TRADEMARK_URL_PNG = None
+LOGO_TRADEMARK_URL_SVG = None
+
+LOGO_URL = None
+LOGO_URL_PNG = None
+LOGO_URL_SVG = None
+
 LOGO_WHITE_URL = None
+LOGO_WHITE_URL_PNG = None
+LOGO_WHITE_URL_SVG = None
+
 FAVICON_URL = None

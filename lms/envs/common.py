@@ -4151,7 +4151,14 @@ MAX_BLOCKS_PER_CONTENT_LIBRARY = 1000
 # https://github.com/SmileyChris/django-countries#show-certain-countries-first
 COUNTRIES_FIRST = []
 
-LOGO_URL = None
+################# Settings for brand logos. #################
 LOGO_TRADEMARK_URL = None
+LOGO_TRADEMARK_URL_PNG = None
+LOGO_TRADEMARK_URL_SVG = None
+LOGO_URL = None
+LOGO_URL_PNG = None
+LOGO_URL_SVG = None
 LOGO_WHITE_URL = None
+LOGO_WHITE_URL_PNG = None
+LOGO_WHITE_URL_SVG = None
 FAVICON_URL = None
