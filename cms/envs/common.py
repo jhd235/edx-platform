@@ -2296,12 +2296,7 @@ VERIFY_STUDENT = {
 }
 
 ################# Settings for brand logos. #################
-LOGO_TRADEMARK_URL = None
-LOGO_TRADEMARK_URL_PNG = None
-LOGO_TRADEMARK_URL_SVG = None
-
 LOGO_URL = None
 LOGO_URL_PNG = None
-LOGO_URL_SVG = None
-
+LOGO_TRADEMARK_URL = None
 FAVICON_URL = None

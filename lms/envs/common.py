@@ -4152,10 +4152,7 @@ MAX_BLOCKS_PER_CONTENT_LIBRARY = 1000
 COUNTRIES_FIRST = []
 
 ################# Settings for brand logos. #################
-LOGO_TRADEMARK_URL = None
-LOGO_TRADEMARK_URL_PNG = None
-LOGO_TRADEMARK_URL_SVG = None
 LOGO_URL = None
 LOGO_URL_PNG = None
-LOGO_URL_SVG = None
+LOGO_TRADEMARK_URL = None
 FAVICON_URL = None
